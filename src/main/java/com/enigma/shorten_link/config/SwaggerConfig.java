@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
         version = "1.0.0",
         description = "Spring Shorten Link API"
 ))
-// @SecurityScheme(name = "Authorization", scheme = "bearer", type = SecuritySchemeType.HTTP, bearerFormat = "JWT")
+@SecurityScheme(name = "Authorization", scheme = "bearer", type = SecuritySchemeType.HTTP, bearerFormat = "JWT")
 @Configuration
 public class SwaggerConfig {
 }
