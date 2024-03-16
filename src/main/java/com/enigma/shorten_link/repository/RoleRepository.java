@@ -1,5 +1,6 @@
-package com.enigma.shorten_link.repo;
+package com.enigma.shorten_link.repository;
 
+import com.enigma.shorten_link.constant.ConstantTable;
 import com.enigma.shorten_link.constant.enums.UserRole;
 import com.enigma.shorten_link.entity.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,17 +14,12 @@ import java.util.Optional;
 
 @Transactional
 @Repository
-public interface RoleRepo extends JpaRepository<Role, String> {
-    @Modifying
+public interface RoleRepository extends JpaRepository<Role, String> {
     @Query(
         nativeQuery = true,
-        value = "SELECT * FROM role WHERE role = :role"
+        value = "SELECT * " +
+                "FROM " + ConstantTable.ROLE + " " +
+                "WHERE role = :role"
     )
-    Optional<Role> findByRole(@Param("role") UserRole role);
-    @Modifying
-    @Query(
-        nativeQuery = true,
-        value = "INSERT INTO role (role) VALUES (:role)"
-    )
-    Role save(@Param("role") Role role);
+    Optional<Role> findByRole(@Param("role") String role);
 }

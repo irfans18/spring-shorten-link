@@ -9,6 +9,7 @@ import com.enigma.shorten_link.model.request.ShortenLinkRequest;
 import com.enigma.shorten_link.model.response.LinkResponse;
 import com.enigma.shorten_link.service.LinkService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -67,11 +69,14 @@ public class LinkController {
     public void redirect(@PathVariable String shortUrl, HttpServletResponse httpServletResponse) {
         LinkResponse redirect = service.redirect(shortUrl);
         httpServletResponse.setHeader("Location", redirect.getRealUrl());
-        httpServletResponse.setStatus(HttpStatus.OK.value());
+        httpServletResponse.setStatus(HttpStatus.TEMPORARY_REDIRECT.value());
     }
 
     // @PreAuthorize("hasAnyRole('USER')")
+
     @Operation(summary = "Update Link")
+    @SecurityRequirement(name = "Authorization")
+    @PreAuthorize("hasAnyRole('ADMIN') OR @credentialServiceImpl.byContext.id == authentication.principal")
     @PutMapping(APIUrl.LINK)
     public ResponseEntity<CommonResponse<LinkResponse>> update(
             @RequestBody ShortenLinkRequest payload
@@ -89,6 +94,8 @@ public class LinkController {
 
     // @PreAuthorize("hasAnyRole('ADMIN')")
     @Operation(summary = "Delete Link")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    @SecurityRequirement(name = "Authorization")
     @DeleteMapping(APIUrl.LINK+"/{id}/delete")
     public ResponseEntity<CommonResponse<String>> delete(@PathVariable String id) {
         service.deleteByid(id);
@@ -101,6 +108,8 @@ public class LinkController {
 
     // @PreAuthorize("hasAnyRole('ADMIN')")
     @Operation(summary = "Get All Link")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    @SecurityRequirement(name = "Authorization")
     @GetMapping(APIUrl.LINK)
     public ResponseEntity<CommonResponse<List<LinkResponse>>> findAll(
             @RequestParam(value = "page", defaultValue = "1") int page,
