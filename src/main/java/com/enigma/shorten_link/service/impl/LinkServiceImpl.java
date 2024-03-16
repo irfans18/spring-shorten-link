@@ -1,16 +1,19 @@
 package com.enigma.shorten_link.service.impl;
 
+import com.enigma.shorten_link.constant.ResponseMessage;
 import com.enigma.shorten_link.entity.Link;
 import com.enigma.shorten_link.model.base.FilterRequest;
 import com.enigma.shorten_link.model.request.SearchLinkRequest;
 import com.enigma.shorten_link.model.request.ShortenLinkRequest;
 import com.enigma.shorten_link.model.response.LinkResponse;
-import com.enigma.shorten_link.repo.LinkRepo;
+import com.enigma.shorten_link.repository.LinkRepository;
 import com.enigma.shorten_link.service.LinkService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.UUID;
 
@@ -18,8 +21,9 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class LinkServiceImpl implements LinkService {
-    private final LinkRepo repo;
+    private final LinkRepository repo;
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public LinkResponse shorten(ShortenLinkRequest request) {
         repo.save(
                 UUID.randomUUID().toString(),
@@ -32,6 +36,7 @@ public class LinkServiceImpl implements LinkService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public LinkResponse update(ShortenLinkRequest request) {
         repo.update(
                 request.getId(),
@@ -44,12 +49,14 @@ public class LinkServiceImpl implements LinkService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public LinkResponse redirect(String shortUrl) {
-        Link link = repo.findByShortUrl(shortUrl).orElseThrow(() -> new RuntimeException("Link not found"));
+        Link link = repo.findByShortUrl(shortUrl).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ResponseMessage.ERROR_NOT_FOUND));
         return mapToResponse(link);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<LinkResponse> findByUserId(SearchLinkRequest request) {
         if (request.getPage() <= 0) request.setPage(1);
         Sort sortBy = Sort.by(Sort.Direction.fromString(request.getDirection()), request.getSortBy());
@@ -63,6 +70,7 @@ public class LinkServiceImpl implements LinkService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<LinkResponse> findAll(FilterRequest request){
         if (request.getPage() <= 0) request.setPage(1);
         Sort sortBy = Sort.by(Sort.Direction.fromString(request.getDirection()), request.getSortBy());
@@ -76,9 +84,10 @@ public class LinkServiceImpl implements LinkService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void deleteByid(String id) {
-        repo.findById(id).orElseThrow(() -> new RuntimeException("Link not found"));
-        repo.deleteById(id);
+        repo.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ResponseMessage.ERROR_NOT_FOUND));
+        repo.softDelete(id);
     }
 
     private LinkResponse mapToResponse(Link saved) {
