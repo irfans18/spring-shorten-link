@@ -13,6 +13,8 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @SuperBuilder
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = ConstantTable.ROLE)
 public class Role extends BaseEntity {
     @Column(name = "role")

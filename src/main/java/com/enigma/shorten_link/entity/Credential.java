@@ -14,6 +14,8 @@ import java.util.List;
 @Setter
 @Getter
 @SuperBuilder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = ConstantTable.CREDENTIAL)
 public class Credential extends BaseEntity implements UserDetails {

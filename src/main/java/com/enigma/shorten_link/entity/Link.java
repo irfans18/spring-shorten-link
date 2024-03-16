@@ -14,6 +14,8 @@ import java.util.Date;
 @Getter
 @SuperBuilder
 @Entity
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = ConstantTable.LINK)
 public class Link extends BaseEntity{
 
@@ -29,8 +31,8 @@ public class Link extends BaseEntity{
     @Column(name = "real_url", nullable = false)
     private String realUrl;
 
-    @Column(name = "hit_count")
-    private Integer hitCount;
+    @Column(name = "hit_count", columnDefinition = "int default 0")
+    private int hitCount;
 
     @Column(name = "last_hit_at")
     private Date lastHitAt;
@@ -38,4 +40,5 @@ public class Link extends BaseEntity{
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
+
 }
