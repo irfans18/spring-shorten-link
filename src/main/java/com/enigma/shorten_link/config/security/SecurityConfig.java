@@ -18,14 +18,16 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import java.util.UUID;
+
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    // private final AuthenticationFilter authenticationFilter;
-    // private final AuthenticationEntryPointImpl unauthorizedHandler;
-    // private final AccessDeniedHandlerImpl accessDeniedHandler;
+    private final AuthenticationFilter authenticationFilter;
+    private final AuthenticationEntryPointImpl unauthorizedHandler;
+    private final AccessDeniedHandlerImpl accessDeniedHandler;
 
 
     @Bean
@@ -33,17 +35,19 @@ public class SecurityConfig {
         return httpSecurity
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
-                // .exceptionHandling(cfg -> cfg
-                //         .authenticationEntryPoint(unauthorizedHandler)
-                //         .accessDeniedHandler(accessDeniedHandler)
-                // )
-                .authorizeHttpRequests(req -> req.dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
-                        .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api-docs/**", "/swagger-ui/**").permitAll()
-                        .anyRequest().permitAll()
+                .exceptionHandling(cfg -> cfg
+                        .authenticationEntryPoint(unauthorizedHandler)
+                        .accessDeniedHandler(accessDeniedHandler)
                 )
-                // .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                // .sessionManagement(cfg -> cfg.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(req -> req.dispatcherTypeMatchers(DispatcherType.ERROR).permitAll()
+                        .requestMatchers(APIUrl.AUTH +"/**").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/api-docs/**", "/swagger-ui/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, APIUrl.LINK).permitAll()
+                        .requestMatchers(HttpMethod.GET, APIUrl.REDIRECT).permitAll()
+                        .anyRequest().authenticated()
+                )
+                .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .sessionManagement(cfg -> cfg.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .build();
     }
 
