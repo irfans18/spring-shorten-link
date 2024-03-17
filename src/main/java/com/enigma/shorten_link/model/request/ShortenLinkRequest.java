@@ -1,10 +1,8 @@
 package com.enigma.shorten_link.model.request;
 
+import com.enigma.shorten_link.util.anotation.Alphanumeric;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
-import lombok.experimental.Accessors;
-
-import java.io.Serializable;
 
 /**
  * DTO for {@link com.enigma.shorten_link.entity.Link}
@@ -19,6 +17,7 @@ public class ShortenLinkRequest {
     private String name;
     private String description;
     @NotBlank
+    @Alphanumeric
     private String shortUrl;
     @NotBlank
     private String realUrl;

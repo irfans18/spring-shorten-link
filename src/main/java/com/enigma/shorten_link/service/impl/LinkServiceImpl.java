@@ -8,11 +8,14 @@ import com.enigma.shorten_link.model.request.ShortenLinkRequest;
 import com.enigma.shorten_link.model.response.LinkResponse;
 import com.enigma.shorten_link.repository.LinkRepository;
 import com.enigma.shorten_link.service.LinkService;
+import com.enigma.shorten_link.util.ValidationUtil;
+import com.enigma.shorten_link.util.anotation.Alphanumeric;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.UUID;
@@ -22,15 +25,18 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class LinkServiceImpl implements LinkService {
     private final LinkRepository repo;
+    private final ValidationUtil validator;
     @Override
     @Transactional(rollbackFor = Exception.class)
     public LinkResponse shorten(ShortenLinkRequest request) {
+        validator.validate(request);
         repo.save(
                 UUID.randomUUID().toString(),
                 request.getName(),
                 request.getDescription(),
                 request.getShortUrl(),
-                request.getRealUrl()
+                request.getRealUrl(),
+                request.getUserId()
         );
         return redirect(request.getShortUrl());
     }
@@ -38,6 +44,7 @@ public class LinkServiceImpl implements LinkService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public LinkResponse update(ShortenLinkRequest request) {
+        validator.validate(request);
         repo.update(
                 request.getId(),
                 request.getName(),
@@ -51,6 +58,7 @@ public class LinkServiceImpl implements LinkService {
     @Override
     @Transactional(readOnly = true)
     public LinkResponse redirect(String shortUrl) {
+        validator.validate(shortUrl);
         Link link = repo.findByShortUrl(shortUrl).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ResponseMessage.ERROR_NOT_FOUND));
         return mapToResponse(link);
     }

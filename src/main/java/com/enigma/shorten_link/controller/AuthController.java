@@ -8,6 +8,8 @@ import com.enigma.shorten_link.model.response.LoginResponse;
 import com.enigma.shorten_link.model.response.RegisterResponse;
 import com.enigma.shorten_link.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(APIUrl.AUTH)
+@Tag(name ="Auth")
 public class AuthController {
     private final AuthService service;
 
@@ -43,6 +46,7 @@ public class AuthController {
 
     @Operation(summary = "Register Admin")
     @PreAuthorize("hasAnyRole('ADMIN')")
+    @SecurityRequirement(name = "Authorization")
     @PostMapping(
             value = "/admin",
             consumes = MediaType.APPLICATION_JSON_VALUE,

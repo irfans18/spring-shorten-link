@@ -19,28 +19,32 @@ public interface LinkRepository extends JpaRepository<Link, String> {
 
     @Modifying
     @Query(
-        nativeQuery = true,
-        value = "INSERT INTO "+ ConstantTable.LINK +" (id, name, description, short_url, real_url, created_at) " +
-                "VALUES (:id, :name, :description, :shortUrl, :realUrl, NOW())"
+            nativeQuery = true,
+            value = "INSERT INTO " + ConstantTable.LINK + " (id, name, description, short_url, real_url, user_id, created_at) " +
+                    "VALUES (:id, :name, :description, :shortUrl, :realUrl, :userId, NOW())"
     )
     void save(
             @Param("id") String id,
             @Param("name") String name,
             @Param("description") String description,
             @Param("shortUrl") String shortUrl,
-            @Param("realUrl") String realUrl
+            @Param("realUrl") String realUrl,
+            @Param("userId") String userId
     );
+
     @Query(
             nativeQuery = true,
             value = "SELECT * " +
-                    "FROM "+ ConstantTable.LINK +
-                    " WHERE short_url = :shortUrl"
+                    "FROM " + ConstantTable.LINK + " " +
+                    "WHERE short_url = :shortUrl " +
+                    "AND deleted_at IS NULL"
     )
     Optional<Link> findByShortUrl(@Param("shortUrl") String shortUrl);
+
     @Modifying
     @Query(
             nativeQuery = true,
-            value = "UPDATE "+ ConstantTable.LINK +
+            value = "UPDATE " + ConstantTable.LINK +
                     " SET name = :name, " +
                     "description = :description, " +
                     "real_url = :realUrl, " +
@@ -59,8 +63,8 @@ public interface LinkRepository extends JpaRepository<Link, String> {
     @Modifying
     @Query(
             nativeQuery = true,
-            value = "UPDATE "+ ConstantTable.LINK+
-                    " SET hit_count = hit_count + 1, " +
+            value = "UPDATE " + ConstantTable.LINK + " " +
+                    "SET hit_count = hit_count + 1, " +
                     "last_hit_at = NOW() " +
                     "WHERE short_url = :shortUrl"
     )
@@ -69,28 +73,29 @@ public interface LinkRepository extends JpaRepository<Link, String> {
     @Query(
             nativeQuery = true,
             countQuery = "SELECT COUNT(*) " +
-                    "FROM "+ ConstantTable.LINK +
+                    "FROM " + ConstantTable.LINK + " " +
                     "WHERE user_id = :userId " +
-                    "AND WHERE deleted_at IS NULL",
+                    "AND deleted_at IS NULL",
             value = "SELECT * " +
-                    "FROM "+ ConstantTable.LINK +
+                    "FROM " + ConstantTable.LINK + " " +
                     "WHERE user_id = :userId " +
-                    "AND WHERE deleted_at IS NULL"
+                    "AND deleted_at IS NULL"
     )
     Page<Link> findAllByUserId(@Param("userId") String userId, Pageable pageable);
 
     @Query(
             nativeQuery = true,
             countQuery = "SELECT COUNT(*) " +
-                    "FROM "+ ConstantTable.LINK ,
+                    "FROM " + ConstantTable.LINK,
             value = "SELECT * " +
-                    "FROM "+ ConstantTable.LINK
+                    "FROM " + ConstantTable.LINK
     )
     Page<Link> findAll(Pageable pageable);
+
     @Modifying
     @Query(
             nativeQuery = true,
-            value = "UPDATE "+ ConstantTable.LINK +
+            value = "UPDATE " + ConstantTable.LINK +
                     " SET deleted_at = NOW() WHERE id = :id"
     )
     void softDelete(@Param("id") String id);

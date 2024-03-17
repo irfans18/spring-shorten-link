@@ -1,5 +1,6 @@
 package com.enigma.shorten_link.model.request;
 
+import com.enigma.shorten_link.util.anotation.Alphanumeric;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
@@ -13,6 +14,7 @@ import lombok.*;
 @Builder
 public class AuthRequest {
     @NotBlank
+    @Alphanumeric
     private String username;
     @NotBlank
     private String password;

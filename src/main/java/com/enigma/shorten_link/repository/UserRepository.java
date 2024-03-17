@@ -26,7 +26,7 @@ public interface UserRepository extends JpaRepository<User, String> {
     @Query(
             nativeQuery = true,
             value = "INSERT INTO " + ConstantTable.USER +
-                    " (id, name, credential_i, created_at) " +
+                    " (id, name, credential_id, created_at) " +
                     "VALUES (:id, :name, :credential_id, NOW())"
     )
     int save(
