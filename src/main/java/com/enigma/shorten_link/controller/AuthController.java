@@ -29,6 +29,7 @@ public class AuthController {
 
     @Operation(summary = "Register User")
     @PostMapping(
+            value = "/register",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
@@ -48,7 +49,7 @@ public class AuthController {
     @PreAuthorize("hasAnyRole('ADMIN')")
     @SecurityRequirement(name = "Authorization")
     @PostMapping(
-            value = "/admin",
+            value = "/register/admin",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )

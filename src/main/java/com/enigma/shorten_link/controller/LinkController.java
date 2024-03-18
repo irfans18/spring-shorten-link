@@ -52,6 +52,8 @@ public class LinkController {
     }
 
     @Operation(summary = "Get Link Details By Short Link Id")
+    @SecurityRequirement(name = "Authorization")
+    @PreAuthorize("hasAnyRole('ADMIN') OR @credentialServiceImpl.byContext.id == authentication.principal")
     @GetMapping(APIUrl.LINK + "/{shortUrl}")
     public ResponseEntity<CommonResponse<LinkResponse>> getUrl(@PathVariable String shortUrl) {
         LinkResponse redirect = service.redirect(shortUrl);
@@ -67,6 +69,7 @@ public class LinkController {
     }
 
     @Operation(summary = "Get Link Details By User Id", description = "Only accessible for user related or admin")
+    @SecurityRequirement(name = "Authorization")
     @PreAuthorize("hasAnyRole('ADMIN') OR @credentialServiceImpl.byContext.id == authentication.principal")
     @GetMapping(APIUrl.LINK + "/users/{userId}")
     public ResponseEntity<CommonResponse<List<LinkResponse>>> getUserUrl(

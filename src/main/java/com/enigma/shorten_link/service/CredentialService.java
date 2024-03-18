@@ -9,6 +9,5 @@ public interface CredentialService extends UserDetailsService {
     Credential findOrFail(String id);
     Credential getByContext();
     Optional<Credential> findByUsername(String username);
-
     Credential save(Credential credential);
 }

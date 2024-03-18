@@ -19,4 +19,11 @@ public class SearchLinkRequest extends FilterRequest {
     @NotBlank
     private String realUrl;
     private String userId;
+
+    public String getPathVariable() {
+        return "?page="+ getPage() +
+                "&size=" + getSize() +
+                "&sortBy="+ getSortBy() +
+                "&direction=" + getDirection();
+    }
 }
