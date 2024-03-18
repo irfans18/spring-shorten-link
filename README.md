@@ -8,10 +8,10 @@ Tech Stack :
 - [x] Docker
 
 Features :
-- [ ] Generate Shorten Link
-- [ ] Update Shorten Link
-- [ ] Auth ( Register | Login )
-- [ ] Role Management ( ADMIN | USER | GUEST )
+- [x] Generate Shorten Link
+- [x] Update Shorten Link
+- [x] Auth ( Register | Login )
+- [x] Role Management ( ADMIN | USER | GUEST )
 - [ ] Scheduler for Invoking No Longer Used Shorten Link
-- [ ] Unit Testing
-- [ ] Swagger API Docs
+- [x] Unit Testing
+- [x] Swagger API Docs
