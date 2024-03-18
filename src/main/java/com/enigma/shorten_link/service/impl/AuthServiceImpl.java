@@ -39,9 +39,9 @@ public class AuthServiceImpl implements AuthService {
     private final JwtUtil jwtUtil;
     private final AuthenticationManager authenticationManager;
 
-    @Value("${wmb_api.username.superadmin}")
+    @Value("${sholin.username.superadmin}")
     private String superAdminUsername;
-    @Value("${wmb_api.password.superadmin}")
+    @Value("${sholin.password.superadmin}")
     private String superAdminPassword;
 
 

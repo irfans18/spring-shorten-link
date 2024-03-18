@@ -15,4 +15,5 @@ public interface LinkService {
     Page<LinkResponse> findAll(FilterRequest request);
     void deleteByid(String id);
 
+    void checkUnHitLinkAndInvoke();
 }

@@ -11,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Transactional
@@ -99,4 +100,13 @@ public interface LinkRepository extends JpaRepository<Link, String> {
                     " SET deleted_at = NOW() WHERE id = :id"
     )
     void softDelete(@Param("id") String id);
+
+    @Query(
+            nativeQuery = true,
+            value = "SELECT * " +
+                    "FROM " + ConstantTable.LINK + " "+
+                    "WHERE last_hit_at IS NULL OR " +
+                    "hit_count = 0"
+    )
+    List<Link> getUnHitLink();
 }

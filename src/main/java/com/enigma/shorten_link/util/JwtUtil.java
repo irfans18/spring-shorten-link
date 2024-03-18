@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Instant;
@@ -26,9 +25,9 @@ public class JwtUtil {
     private final long EXPIRATION_TIME;
 
     public JwtUtil(
-            @Value("${wmb_api.jwt.secret_key}") String jwtSecret,
-            @Value("${wmb_api.jwt.issuer}") String issuer,
-            @Value("${wmb_api.jwt.expiration}") long expirationTime
+            @Value("${sholin.jwt.secret_key}") String jwtSecret,
+            @Value("${sholin.jwt.issuer}") String issuer,
+            @Value("${sholin.jwt.expiration}") long expirationTime
     ) {
         JWT_SECRET = jwtSecret;
         ISSUER = issuer;

@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
 import java.util.UUID;
 
 @Transactional
@@ -96,6 +97,15 @@ public class LinkServiceImpl implements LinkService {
     public void deleteByid(String id) {
         repo.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, ResponseMessage.ERROR_NOT_FOUND));
         repo.softDelete(id);
+    }
+
+    @Override
+    public void checkUnHitLinkAndInvoke() {
+        List<Link> unHitLinkList = repo.getUnHitLink();
+        if (unHitLinkList.isEmpty()) return;
+        for (Link link : unHitLinkList) {
+            deleteByid(link.getId());
+        }
     }
 
     private LinkResponse mapToResponse(Link saved) {
