@@ -1,0 +1,30 @@
+version: '3.8'
+services:
+  backend:
+    image: spring-sholin-api
+    container_name: sholin-api
+    depends_on:
+      - db
+    environment:
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_USER=${DB_USER}
+      - DB_NAME=${DB_NAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+    networks:
+      - todo-network
+  db:
+    image: postgres:alpine3.17
+    container_name: sholin-db
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=P@ssw0rd
+    restart: always
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    networks:
+      - sholin-network
+volumes:
+  db-data:
+networks:
+  sholin-network:
